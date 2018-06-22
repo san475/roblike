@@ -50,9 +50,10 @@ Player * playerSetUp()
     newPlayer = malloc(sizeof(Player));
 
     newPlayer->xPosition = 14;
-    newPlayer->yPosition = 14;
+    newPlayer->yPosition = 10;
     newPlayer->health = 28;
     mvprintw(newPlayer->yPosition,newPlayer->xPosition, "@");
+    move(newPlayer->yPosition, newPlayer->xPosition);
 
     return newPlayer;
 }
@@ -61,7 +62,6 @@ Player * playerSetUp()
 int screenSetUp()
 {
     initscr();
-    printw("Hello World");
     noecho();
     refresh();
 
@@ -82,27 +82,36 @@ int mapSetUp()
 
 int handle(int input,Player * user){
 
+    
     switch(input)
     {
         //UP
         case 'w':
         case 'W':
-            printPlayer(user->yPosition-1, user->xPosition, user);
+            if(mvinch(user->yPosition-1, user->xPosition) != '-')
+                printPlayer(user->yPosition-1, user->xPosition, user);
+            move(user->yPosition, user->xPosition);
             break;
-        //LEFT
+            //LEFT
         case 'a':
         case 'A':
-            printPlayer(user->yPosition, user->xPosition-1, user);
+            if(mvinch(user->yPosition, user->xPosition - 1) != '|')
+                printPlayer(user->yPosition, user->xPosition-1, user);
+            move(user->yPosition, user->xPosition);
             break;
-        //RIGHT
+            //RIGHT
         case 'd':
         case 'D':
-            printPlayer(user->yPosition, user->xPosition+1, user);
+            if(mvinch(user->yPosition, user->xPosition + 1) != '|')
+                printPlayer(user->yPosition, user->xPosition+1, user);
+            move(user->yPosition, user->xPosition);
             break;
-        //DOWN
+            //DOWN
         case 's':
         case 'S':
-            printPlayer(user->yPosition+1, user->xPosition, user);
+            if(mvinch(user->yPosition+1, user->xPosition) != '-')
+                printPlayer(user->yPosition+1, user->xPosition, user);
+            move(user->yPosition, user->xPosition);
             break;
 
         default:
