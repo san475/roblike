@@ -12,21 +12,30 @@ typedef struct Player
 } Player;
 
 //Function Declarations
-Player * playerSetUp();
+
 
 int screenSetUp();
 int mapSetUp();
+Player * playerSetUp();
+int handle(int input, Player * user);
+int printPlayer(int y, int x, Player * userMove);
 
 //Main Function  
 int main (void) 
 {
     Player * user;
     screenSetUp();
-
+    int ch;
     mapSetUp();
 
     user = playerSetUp();
-    getch();
+//Main game loop
+    while((ch = getch()) != 'y')
+    {
+        
+        handle(ch,user);
+
+    }
 
     endwin();
 
@@ -62,11 +71,56 @@ int screenSetUp()
 //Map Draw
 int mapSetUp()
 {
-    mvprintw(13, 13, "--------");
-    mvprintw(14, 13, "--------");
-    mvprintw(15, 13, "--------");
-    mvprintw(16, 13, "--------");
-    mvprintw(17, 13, "--------");
-
+    mvprintw(12, 13, "---------");
+    mvprintw(13, 13, "|.......|");
+    mvprintw(14, 13, "|.......|");
+    mvprintw(15, 13, "|.......|");
+    mvprintw(16, 13, "|.......|");
+    mvprintw(17, 13, "|.......|");
+    mvprintw(18, 13, "---------");
 }
 
+int handle(int input,Player * user){
+
+    switch(input)
+    {
+        //UP
+        case 'w':
+        case 'W':
+            printPlayer(user->yPosition-1, user->xPosition, user);
+            break;
+        //LEFT
+        case 'a':
+        case 'A':
+            printPlayer(user->yPosition, user->xPosition-1, user);
+            break;
+        //RIGHT
+        case 'd':
+        case 'D':
+            printPlayer(user->yPosition, user->xPosition+1, user);
+            break;
+        //DOWN
+        case 's':
+        case 'S':
+            printPlayer(user->yPosition+1, user->xPosition, user);
+            break;
+
+        default:
+            break;
+
+    }
+    return 0;
+}
+
+
+int printPlayer(int y, int x, Player * userMove){
+
+    mvprintw(userMove->yPosition, userMove->xPosition, ".");
+    userMove->xPosition = x;
+    userMove->yPosition = y;
+
+    mvprintw(userMove->yPosition, userMove->xPosition, "@");
+    move(userMove->yPosition, userMove->xPosition);
+
+    return 0;
+}
