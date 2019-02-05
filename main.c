@@ -19,6 +19,8 @@ Player * playerSetUp();
 int handle(int input, Player * user);
 int checkPos(int dir, char tar, Player * user);
 int printPlayer(int y, int x, Player * userMove);
+int printUI(Player* user);
+int updatePlayer(int input, Player *user);
 
 //Main Function  
 int main (void) 
@@ -33,7 +35,7 @@ int main (void)
 //Main game loop
     while((ch = getch()) != 'y')
     {
-        handle(ch,user);
+        updatePlayer(ch, user);
 
     }
 
@@ -76,9 +78,18 @@ int mapSetUp()
     mvprintw(16, 13, "|..............|");
     mvprintw(17, 13, "|..............|");
     mvprintw(18, 13, "----------------");
+    return 0;
 }
 
-int handle(int input,Player * user){
+int updatePlayer(int input, Player *user)
+{
+    printUI(user);
+    handle(input ,user);
+    return 0;
+}
+
+int handle(int input,Player * user)
+{
     switch(input)
     {
         //UP
@@ -152,6 +163,20 @@ int printPlayer(int y, int x, Player * userMove){
 
     mvprintw(userMove->yPosition, userMove->xPosition, "@");
     move(userMove->yPosition, userMove->xPosition);
+
+    return 0;
+}
+int printUI(Player *user)
+{
+    char* health = malloc(sizeof(int) * 5);
+    char* x = malloc(sizeof(int) * 5);
+    char* y = malloc(sizeof(int) * 5);
+    sprintf( health, "HP: %d", user -> health);
+    sprintf( x, "x: %d", user -> xPosition);
+    sprintf( y, "y: %d", user -> yPosition);
+    mvprintw(22, 14, health);
+    mvprintw(22, 22, x);
+    mvprintw(22, 28, y);
 
     return 0;
 }
