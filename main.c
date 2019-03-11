@@ -2,61 +2,44 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <string.h>
+#include "main.h"
 
-//Structure Definitions
-typedef struct Player
-{
-    int xPosition;
-    int yPosition;
-    int health;
-
-} Player;
-
-//Function Declarations
-int screenSetUp();
-int mapSetUp();
-Player * playerSetUp();
-int handle(int input, Player * user);
-int checkPos(int dir, char tar, Player * user);
-int printPlayer(int y, int x, Player * userMove);
-int printUI(Player* user);
-int updatePlayer(int input, Player *user);
 
 //Main Function  
 int main (void) 
 {
+    //init player pointer
     Player * user;
+
+    //define player pointer
+    user = playerSetUp();
+
+    //clear screen and set up option
     screenSetUp();
+
+    //init input char int
     int ch;
+
+    //draw rooms
     mapSetUp();
 
-    user = playerSetUp();
+    //set up player and ui
+    setUp(user);
+   
+
 
 //Main game loop
     while((ch = getch()) != 'y')
     {
-        updatePlayer(ch, user);
-
+        handle(ch, user);
+        setUp(user);
     }
 
     endwin();
+    free(user);
     return 0;
 }
 
-//Player Set Up
-Player * playerSetUp()
-{
-    Player * newPlayer;
-    newPlayer = malloc(sizeof(Player));
-
-    newPlayer->xPosition = 14;
-    newPlayer->yPosition = 14;
-    newPlayer->health = 28;
-    mvprintw(newPlayer->yPosition,newPlayer->xPosition, "@");
-    move(newPlayer->yPosition, newPlayer->xPosition);
-
-    return newPlayer;
-}
 
 //Screen clear Funct
 int screenSetUp()
@@ -64,6 +47,16 @@ int screenSetUp()
     initscr();
     noecho();
     refresh();
+
+    return 0;
+}
+/*
+ * sets up player and ui based on player
+ * */
+int setUp(Player * user)
+{
+    printPlayer(user);
+    printUI(user);
 
     return 0;
 }
@@ -81,41 +74,35 @@ int mapSetUp()
     return 0;
 }
 
-int updatePlayer(int input, Player *user)
-{
-    printUI(user);
-    handle(input ,user);
-    return 0;
-}
 
-int handle(int input,Player * user)
+int handle(int input, Player * user)
 {
     switch(input)
     {
         //UP
-        case 'w':
-        case 'W':
+        case 'k':
+        case 'K':
             if(checkPos(0, '-', user) != 1)
-                printPlayer(user->yPosition-1, user->xPosition, user);
+                movePlayer(user->yPosition-1, user->xPosition, user);
             break;
             
         //LEFT
-        case 'a':
-        case 'A':
+        case 'h':
+        case 'H':
             if(checkPos(3, '|', user) != 1)
-                printPlayer(user->yPosition, user->xPosition-1, user);
+                movePlayer(user->yPosition, user->xPosition-1, user);
             break;
         //RIGHT
-        case 'd':
-        case 'D':
+        case 'l':
+        case 'L':
             if(checkPos(1, '|', user) != 1)
-                printPlayer(user->yPosition, user->xPosition+1, user);
+                movePlayer(user->yPosition, user->xPosition+1, user);
             break;
         //DOWN
-        case 's':
-        case 'S':
+        case 'j':
+        case 'J':
             if(checkPos(2, '-', user) != 1)
-                printPlayer(user->yPosition+1, user->xPosition, user);
+                movePlayer(user->yPosition+1, user->xPosition, user);
             break;
 
         default:
@@ -155,28 +142,23 @@ int checkPos(int dir, char tar, Player * user)
 } 
 
 //moves player to new position
-int printPlayer(int y, int x, Player * userMove){
-
-    mvprintw(userMove->yPosition, userMove->xPosition, ".");
-    userMove->xPosition = x;
-    userMove->yPosition = y;
-
-    mvprintw(userMove->yPosition, userMove->xPosition, "@");
-    move(userMove->yPosition, userMove->xPosition);
-
-    return 0;
-}
 int printUI(Player *user)
 {
+    /*
     char* health = malloc(sizeof(int) * 5);
     char* x = malloc(sizeof(int) * 5);
     char* y = malloc(sizeof(int) * 5);
+    
     sprintf( health, "HP: %d", user -> health);
     sprintf( x, "x: %d", user -> xPosition);
     sprintf( y, "y: %d", user -> yPosition);
-    mvprintw(22, 14, health);
-    mvprintw(22, 22, x);
-    mvprintw(22, 28, y);
+    */
+    //changed to user ->
+    mvprintw(22, 14, "HP: %d", user->health);
+    mvprintw(22, 28, "y: %d", user->yPosition);
+    mvprintw(22, 22, "x: %d", user->xPosition);
+    // Moves back curor to player
+    move(user->yPosition, user->xPosition);
 
     return 0;
 }
