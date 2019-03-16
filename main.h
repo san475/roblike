@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include "player.h"
+#include "map.h"
 
 
 //Structure Definitions
